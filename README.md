@@ -1,8 +1,8 @@
 # 🚀 ProTech - Ferramentas Digitais Profissionais
 
-[![Status](https://img.shields.io/badge/status-active-brightgreen.svg)](https://github.com/usuario/protech)
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/usuario/protech)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/usuario/protech/blob/main/LICENSE)
+[![Status](https://img.shields.io/badge/status-active-brightgreen.svg)](https://github.com/Davilla07/PromptProdutoEscalavel)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/Davilla07/PromptProdutoEscalavel)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/Davilla07/PromptProdutoEscalavel/blob/main/LICENSE)
 
 ## 📖 Sobre o Projeto
 
@@ -72,8 +72,8 @@ ProTech/
 
 1. **Clone o repositório**
 ```bash
-git clone https://github.com/usuario/protech.git
-cd protech
+git clone https://github.com/Davilla07/PromptProdutoEscalavel.git
+cd PromptProdutoEscalavel
 ```
 
 2. **Abra no VS Code**
@@ -173,7 +173,7 @@ Nenhum bug crítico conhecido no momento.
 
 Para suporte, envie um email para: suporte@protech.com
 
-Ou abra uma issue no GitHub: [Issues](https://github.com/usuario/protech/issues)
+Ou abra uma issue no GitHub: [Issues](https://github.com/Davilla07/PromptProdutoEscalavel/issues)
 
 ## 📄 Licença
 
