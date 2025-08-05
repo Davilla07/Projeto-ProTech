@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Boas-vindas - Utilidade Pro</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../styles/style.css" />
+</head>
+
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-blue-900 text-gray-900 dark:text-gray-50">
+  <!-- Header -->
+  <nav class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-sm border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center">
+          <h1 class="text-xl font-semibold">Utilidade Pro</h1>
+        </div>
+        <div class="flex items-center space-x-4">
+          <span id="nomeUsuario" class="text-sm text-gray-600 dark:text-gray-300"></span>
+          <button 
+            id="btnContinuar" 
+            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm transition"
+          >
+            Continuar →
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="min-h-screen flex flex-col items-center justify-center p-4">
+    <!-- Card Principal -->
+    <div class="w-full max-w-4xl bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-3xl shadow-2xl p-8 md:p-12">
+      <!-- Cabeçalho de Boas-vindas -->
+      <div class="text-center mb-8">
+        <div class="mb-6">
+          <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full text-white text-3xl font-bold shadow-lg">
+            UP
+          </div>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-4">
+          Bem-vindo(a)!
+        </h1>
+        <p id="saudacaoPersonalizada" class="text-xl text-gray-600 dark:text-gray-300 mb-2"></p>
+        <p class="text-gray-500 dark:text-gray-400">
+          Estamos felizes em tê-lo(a) conosco na Utilidade Pro
+        </p>
+      </div>
+
+      <!-- Informações do Sistema -->
+      <div class="grid md:grid-cols-2 gap-8 mb-8">
+        <!-- Recursos Disponíveis -->
+        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-2xl p-6">
+          <h3 class="text-lg font-semibold mb-4 flex items-center">
+            <span class="text-2xl mr-3">⚡</span>
+            Recursos Disponíveis
+          </h3>
+          <ul class="space-y-3">
+            <li class="flex items-center text-sm">
+              <span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
+              Geração de propostas personalizadas
+            </li>
+            <li class="flex items-center text-sm">
+              <span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
+              Histórico completo de propostas
+            </li>
+            <li class="flex items-center text-sm">
+              <span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
+              Templates profissionais
+            </li>
+            <li class="flex items-center text-sm">
+              <span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
+              Exportação de dados
+            </li>
+            <li id="recursoAdmin" class="flex items-center text-sm hidden">
+              <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+              Painel administrativo
+            </li>
+          </ul>
+        </div>
+
+        <!-- Estatísticas Rápidas -->
+        <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-2xl p-6">
+          <h3 class="text-lg font-semibold mb-4 flex items-center">
+            <span class="text-2xl mr-3">📊</span>
+            Suas Estatísticas
+          </h3>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="text-center">
+              <div id="totalPropostas" class="text-2xl font-bold text-green-600">0</div>
+              <div class="text-xs text-gray-500">Propostas</div>
+            </div>
+            <div class="text-center">
+              <div id="clientesUnicos" class="text-2xl font-bold text-blue-600">0</div>
+              <div class="text-xs text-gray-500">Clientes</div>
+            </div>
+            <div class="text-center">
+              <div id="esteMes" class="text-2xl font-bold text-purple-600">0</div>
+              <div class="text-xs text-gray-500">Este mês</div>
+            </div>
+            <div class="text-center">
+              <div id="mediasDias" class="text-2xl font-bold text-orange-600">0</div>
+              <div class="text-xs text-gray-500">Média/dia</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ações Rápidas -->
+      <div class="mb-8">
+        <h3 class="text-lg font-semibold mb-4 text-center">Ações Rápidas</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <button id="btnNovaPropostaRapida" class="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white p-4 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+            <div class="text-2xl mb-2">📝</div>
+            <div class="font-medium">Nova Proposta</div>
+            <div class="text-xs opacity-80">Criar proposta rapidamente</div>
+          </button>
+          
+          <button id="btnVerHistorico" class="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white p-4 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+            <div class="text-2xl mb-2">📋</div>
+            <div class="font-medium">Ver Histórico</div>
+            <div class="text-xs opacity-80">Consultar propostas anteriores</div>
+          </button>
+          
+          <button id="btnPainelAdmin" class="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white p-4 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 hidden">
+            <div class="text-2xl mb-2">⚙️</div>
+            <div class="font-medium">Painel Admin</div>
+            <div class="text-xs opacity-80">Gerenciar sistema</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Dicas -->
+      <div class="bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 rounded-2xl p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-3 flex items-center">
+          <span class="text-2xl mr-3">💡</span>
+          Dica do Dia
+        </h3>
+        <p id="dicaDoDia" class="text-sm text-gray-600 dark:text-gray-300"></p>
+      </div>
+
+      <!-- Botão Principal -->
+      <div class="text-center">
+        <button id="btnIniciar" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-4 px-8 rounded-xl text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+          Começar a Usar 🚀
+        </button>
+      </div>
+    </div>
+
+    <!-- Indicador de Progresso -->
+    <div class="mt-8 text-center">
+      <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+        Redirecionamento automático em <span id="contador">10</span> segundos
+      </p>
+      <div class="w-48 bg-gray-200 dark:bg-gray-700 rounded-full h-1 mx-auto">
+        <div id="barraProgresso" class="bg-blue-600 h-1 rounded-full transition-all duration-1000" style="width: 0%"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Scripts -->
+  <script type="module" src="../js/core/toast.js"></script>
+
+  <script>
+    class BoasVindas {
+      constructor() {
+        // Remover dependências antigas
+        this.contadorInicial = 10;
+        this.contadorAtual = this.contadorInicial;
+        this.timerRedirecionamento = null;
+        
+        this.inicializar();
+      }
+
+      async inicializar() {
+        // Verificar autenticação usando o novo sistema
+        const userData = sessionStorage.getItem('usuarioLogado') || 
+                        localStorage.getItem('usuarioLogado');
+        
+        if (!userData) {
+          console.log('🚫 Usuário não autenticado, redirecionando...');
+          window.location.href = 'login.html';
+          return;
+        }
+
+        try {
+          const usuario = JSON.parse(userData);
+          
+          if (!usuario || !usuario.id || !usuario.name) {
+            console.log('🚫 Dados de usuário inválidos');
+            sessionStorage.clear();
+            localStorage.removeItem('usuarioLogado');
+            window.location.href = 'login.html';
+            return;
+          }
+
+          // Configurar interface com dados válidos
+          await this.configurarInterface(usuario);
+          this.configurarEventos();
+          this.iniciarContadorRegressivo();
+          this.mostrarDicaDoDia();
+          
+        } catch (error) {
+          console.error('💥 Erro ao processar dados:', error);
+          window.location.href = 'login.html';
+        }
+      }
+
+      async configurarInterface(usuario) {
+        // Saudação personalizada
+        document.getElementById('nomeUsuario').textContent = usuario.name;
+        document.getElementById('saudacaoPersonalizada').textContent = 
+          `Olá, ${usuario.name}! 👋`;
+
+        // Mostrar recursos admin se aplicável
+        if (usuario.role === 'admin') {
+          const adminElement = document.getElementById('recursoAdmin');
+          const adminBtn = document.getElementById('btnPainelAdmin');
+          
+          if (adminElement) adminElement.classList.remove('hidden');
+          if (adminBtn) adminBtn.classList.remove('hidden');
+        }
+
+        // Carregar estatísticas
+        await this.carregarEstatisticas();
+      }
+
+      async carregarEstatisticas() {
+        try {
+          // Estatísticas simples para demonstração
+          const stats = {
+            totalPropostas: Math.floor(Math.random() * 50) + 10,
+            totalClientes: Math.floor(Math.random() * 20) + 5,
+            totalFaturamento: Math.floor(Math.random() * 100000) + 50000
+          };
+          
+          // Atualizar interface
+          this.atualizarEstatisticas(stats);
+          
+        } catch (error) {
+          console.warn('⚠️ Erro ao carregar estatísticas:', error);
+          // Usar valores padrão
+          this.atualizarEstatisticas({
+            totalPropostas: '--',
+            totalClientes: '--', 
+            totalFaturamento: '--'
+          });
+        }
+      }
+
+      atualizarEstatisticas(stats) {
+        try {
+          const elementos = {
+            totalPropostas: document.getElementById('totalPropostas'),
+            clientesUnicos: document.getElementById('clientesUnicos'),
+            esteMes: document.getElementById('esteMes'),
+            mediasDias: document.getElementById('mediasDias')
+          };
+
+          if (elementos.totalPropostas) {
+            elementos.totalPropostas.textContent = stats.totalPropostas || '--';
+          }
+          if (elementos.clientesUnicos) {
+            elementos.clientesUnicos.textContent = stats.totalClientes || '--';
+          }
+          if (elementos.esteMes) {
+            elementos.esteMes.textContent = stats.totalFaturamento ? 
+              `R$ ${stats.totalFaturamento.toLocaleString('pt-BR')}` : '--';
+          }
+          if (elementos.mediasDias) {
+            elementos.mediasDias.textContent = stats.totalPropostas ? 
+              Math.round(stats.totalPropostas / 30) : '--';
+          }
+        } catch (error) {
+          console.error('Erro ao atualizar estatísticas:', error);
+        }
+      }
+
+      configurarEventos() {
+        // Botão continuar
+        document.getElementById('btnContinuar').addEventListener('click', () => {
+          this.pararContador();
+          this.irParaFerramenta();
+        });
+
+        // Botão iniciar
+        document.getElementById('btnIniciar').addEventListener('click', () => {
+          this.pararContador();
+          this.irParaFerramenta();
+        });
+
+        // Ações rápidas
+        document.getElementById('btnNovaPropostaRapida').addEventListener('click', () => {
+          this.pararContador();
+          this.irParaFerramenta();
+        });
+
+        document.getElementById('btnVerHistorico').addEventListener('click', () => {
+          this.pararContador();
+          this.irParaFerramenta();
+        });
+
+        document.getElementById('btnPainelAdmin').addEventListener('click', () => {
+          this.pararContador();
+          window.location.href = 'admin.html';
+        });
+
+        // Parar contador ao interagir com a página
+        document.addEventListener('click', () => this.pararContador());
+        document.addEventListener('keydown', () => this.pararContador());
+      }
+
+      iniciarContadorRegressivo() {
+        this.timerRedirecionamento = setInterval(() => {
+          this.contadorAtual--;
+          document.getElementById('contador').textContent = this.contadorAtual;
+          
+          const progresso = ((this.contadorInicial - this.contadorAtual) / this.contadorInicial) * 100;
+          document.getElementById('barraProgresso').style.width = `${progresso}%`;
+
+          if (this.contadorAtual <= 0) {
+            this.irParaFerramenta();
+          }
+        }, 1000);
+      }
+
+      pararContador() {
+        if (this.timerRedirecionamento) {
+          clearInterval(this.timerRedirecionamento);
+          this.timerRedirecionamento = null;
+          
+          // Ocultar contador
+          const contadorEl = document.getElementById('contador').parentElement.parentElement;
+          contadorEl.style.display = 'none';
+        }
+      }
+
+      irParaFerramenta() {
+        Toast.sucesso('Redirecionando para a ferramenta...', { duracao: 2000 });
+        setTimeout(() => {
+          window.location.href = 'ferramenta.html';
+        }, 500);
+      }
+
+      mostrarDicaDoDia() {
+        const dicas = [
+          'Use nomes específicos para seus clientes para propostas mais personalizadas.',
+          'Mantenha descrições de serviços claras e objetivas para melhor comunicação.',
+          'Consulte seu histórico regularmente para acompanhar seu progresso.',
+          'Exporte suas propostas para ter backups importantes.',
+          'Use a função de copiar para agilizar o envio de propostas.',
+          'Organize suas propostas por cliente para facilitar o acompanhamento.',
+          'Revise sempre suas propostas antes de enviar aos clientes.'
+        ];
+
+        const dicaAleatoria = dicas[Math.floor(Math.random() * dicas.length)];
+        document.getElementById('dicaDoDia').textContent = dicaAleatoria;
+      }
+    }
+
+    // Inicializar quando o DOM estiver pronto
+    document.addEventListener('DOMContentLoaded', () => {
+      new BoasVindas();
+    });
+  </script>
+</body>
+
+</html>

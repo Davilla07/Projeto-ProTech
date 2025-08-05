@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - Sistema de Propostas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    animation: {
+                        'slide-up': 'slideUp 0.3s ease-out',
+                        'fade-in': 'fadeIn 0.5s ease-out'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300">
+    <!-- Header -->
+    <header class="gradient-bg text-white shadow-xl">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="text-3xl">⚙️</div>
+                    <div>
+                        <h1 class="text-2xl font-bold">Painel Administrativo</h1>
+                        <p class="text-blue-100 text-sm">Sistema de Gerenciamento</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="text-right">
+                        <p id="nomeAdmin" class="font-medium">Carregando...</p>
+                        <p class="text-blue-100 text-sm">Administrador</p>
+                    </div>
+                    
+                    <div class="flex space-x-2">
+                        <button onclick="toggleTheme()" class="p-2 rounded-lg bg-white/20 hover:bg-white/30 transition" title="Alternar tema">
+                            <span id="themeIcon">🌙</span>
+                        </button>
+                        
+                        <button onclick="voltarParaFerramenta()" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg transition">
+                            🔙 Voltar
+                        </button>
+                        
+                        <button onclick="processarLogout()" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg transition">
+                            🚪 Sair
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-8">
+        <!-- Dashboard Cards -->
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Card: Total de Usuários -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 card-hover transition-all duration-300 animate-fade-in">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">Total de Usuários</p>
+                        <p id="totalUsuarios" class="text-3xl font-bold text-blue-600 dark:text-blue-400">0</p>
+                    </div>
+                    <div class="bg-blue-100 dark:bg-blue-900 p-3 rounded-lg">
+                        <span class="text-2xl">👥</span>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-sm">
+                    <span class="text-green-500">↗</span>
+                    <span class="text-gray-600 dark:text-gray-400 ml-1">+12% este mês</span>
+                </div>
+            </div>
+
+            <!-- Card: Total de Propostas -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 card-hover transition-all duration-300 animate-fade-in">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">Total de Propostas</p>
+                        <p id="totalPropostas" class="text-3xl font-bold text-green-600 dark:text-green-400">0</p>
+                    </div>
+                    <div class="bg-green-100 dark:bg-green-900 p-3 rounded-lg">
+                        <span class="text-2xl">📄</span>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-sm">
+                    <span class="text-green-500">↗</span>
+                    <span class="text-gray-600 dark:text-gray-400 ml-1">+28% este mês</span>
+                </div>
+            </div>
+
+            <!-- Card: Propostas Hoje -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 card-hover transition-all duration-300 animate-fade-in">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">Propostas Hoje</p>
+                        <p id="propostasHoje" class="text-3xl font-bold text-purple-600 dark:text-purple-400">0</p>
+                    </div>
+                    <div class="bg-purple-100 dark:bg-purple-900 p-3 rounded-lg">
+                        <span class="text-2xl">📊</span>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-sm">
+                    <span class="text-blue-500">→</span>
+                    <span class="text-gray-600 dark:text-gray-400 ml-1">Meta: 10/dia</span>
+                </div>
+            </div>
+
+            <!-- Card: Usuários Ativos -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 card-hover transition-all duration-300 animate-fade-in">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">Usuários Ativos</p>
+                        <p id="usuariosAtivos" class="text-3xl font-bold text-orange-600 dark:text-orange-400">0</p>
+                    </div>
+                    <div class="bg-orange-100 dark:bg-orange-900 p-3 rounded-lg">
+                        <span class="text-2xl">🟢</span>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-sm">
+                    <span class="text-green-500">↗</span>
+                    <span class="text-gray-600 dark:text-gray-400 ml-1">Últimas 24h</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg mb-6">
+            <div class="border-b border-gray-200 dark:border-gray-700">
+                <nav class="flex space-x-8 px-6">
+                    <button id="tabUsuarios" class="tab-button active py-4 px-1 border-b-2 font-medium text-sm" onclick="alternarTab('usuarios')">
+                        👥 Gerenciar Usuários
+                    </button>
+                    <button id="tabPropostas" class="tab-button py-4 px-1 border-b-2 font-medium text-sm" onclick="alternarTab('propostas')">
+                        📄 Gerenciar Propostas
+                    </button>
+                    <button id="tabAuditoria" class="tab-button py-4 px-1 border-b-2 font-medium text-sm" onclick="alternarTab('auditoria')">
+                        🔍 Auditoria
+                    </button>
+                    <button id="tabConfiguracoes" class="tab-button py-4 px-1 border-b-2 font-medium text-sm" onclick="alternarTab('configuracoes')">
+                        ⚙️ Configurações
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Tab Content: Usuários -->
+            <div id="contentUsuarios" class="tab-content p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white">Gerenciar Usuários</h2>
+                    <button onclick="abrirModalNovoUsuario()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition flex items-center space-x-2">
+                        <span>➕</span>
+                        <span>Novo Usuário</span>
+                    </button>
+                </div>
+
+                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 mb-4">
+                    <div class="flex flex-wrap gap-4 items-center">
+                        <input type="text" id="searchUsuarios" placeholder="Buscar usuários..." class="flex-1 min-w-64 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white">
+                        
+                        <select id="filterPerfil" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white">
+                            <option value="">Todos os perfis</option>
+                            <option value="admin">Admin</option>
+                            <option value="user">Usuário</option>
+                        </select>
+                        
+                        <button onclick="filtrarUsuarios()" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition">
+                            🔍 Filtrar
+                        </button>
+                    </div>
+                </div>
+
+                <div id="listaUsuarios" class="space-y-4">
+                    <!-- Lista de usuários será carregada aqui -->
+                </div>
+            </div>
+
+            <!-- Tab Content: Propostas -->
+            <div id="contentPropostas" class="tab-content hidden p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white">Gerenciar Propostas</h2>
+                    <div class="flex space-x-2">
+                        <button onclick="exportarPropostas()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition flex items-center space-x-2">
+                            <span>📥</span>
+                            <span>Exportar</span>
+                        </button>
+                        <button onclick="limparPropostasAntigas()" class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg transition">
+                            🗑️ Limpar Antigas
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 mb-4">
+                    <div class="flex flex-wrap gap-4 items-center">
+                        <input type="text" id="searchPropostas" placeholder="Buscar propostas..." class="flex-1 min-w-64 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white">
+                        
+                        <input type="date" id="dataInicio" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white">
+                        
+                        <input type="date" id="dataFim" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white">
+                        
+                        <button onclick="filtrarPropostas()" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition">
+                            🔍 Filtrar
+                        </button>
+                    </div>
+                </div>
+
+                <div id="listaPropostas" class="space-y-4">
+                    <!-- Lista de propostas será carregada aqui -->
+                </div>
+            </div>
+
+            <!-- Tab Content: Auditoria -->
+            <div id="contentAuditoria" class="tab-content hidden p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white">Log de Auditoria</h2>
+                    <div class="flex space-x-2">
+                        <button onclick="exportarLogs()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition">
+                            📥 Exportar Logs
+                        </button>
+                        <button onclick="limparLogsAntigos()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition">
+                            🗑️ Limpar Antigos
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 mb-4">
+                    <div class="flex flex-wrap gap-4 items-center">
+                        <select id="filterTipoLog" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white">
+                            <option value="">Todos os tipos</option>
+                            <option value="login">Login</option>
+                            <option value="logout">Logout</option>
+                            <option value="proposta">Proposta</option>
+                            <option value="admin">Ação Admin</option>
+                        </select>
+                        
+                        <input type="text" id="searchLogs" placeholder="Buscar nos logs..." class="flex-1 min-w-64 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white">
+                        
+                        <button onclick="filtrarLogs()" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition">
+                            🔍 Filtrar
+                        </button>
+                    </div>
+                </div>
+
+                <div id="listaLogs" class="space-y-2">
+                    <!-- Lista de logs será carregada aqui -->
+                </div>
+            </div>
+
+            <!-- Tab Content: Configurações -->
+            <div id="contentConfiguracoes" class="tab-content hidden p-6">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Configurações do Sistema</h2>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Configurações de Segurança -->
+                    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+                        <h3 class="text-lg font-semibold mb-4 flex items-center">
+                            <span class="text-xl mr-2">🔐</span>
+                            Segurança
+                        </h3>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Tempo de Inatividade (minutos)</label>
+                                <input type="number" id="tempoInatividade" min="5" max="60" value="30" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white">
+                            </div>
+                            
+                            <div>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="forcarHttps" class="mr-2">
+                                    <span class="text-sm">Forçar HTTPS</span>
+                                </label>
+                            </div>
+                            
+                            <div>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="logAuditoria" checked class="mr-2">
+                                    <span class="text-sm">Log de Auditoria Ativo</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Configurações de Sistema -->
+                    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+                        <h3 class="text-lg font-semibold mb-4 flex items-center">
+                            <span class="text-xl mr-2">⚙️</span>
+                            Sistema
+                        </h3>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Limite de Propostas por Usuário/Dia</label>
+                                <input type="number" id="limiteProposta" min="1" max="100" value="50" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Retenção de Dados (dias)</label>
+                                <input type="number" id="retencaoDados" min="30" max="365" value="90" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white">
+                            </div>
+                            
+                            <div>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="modoManutencao" class="mr-2">
+                                    <span class="text-sm">Modo Manutenção</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 flex justify-end space-x-4">
+                    <button onclick="resetarConfiguracoes()" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg transition">
+                        🔄 Resetar
+                    </button>
+                    <button onclick="salvarConfiguracoes()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition">
+                        💾 Salvar Configurações
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal: Novo Usuário -->
+    <div id="modalNovoUsuario" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-md mx-4 animate-slide-up">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">Novo Usuário</h3>
+                    <button onclick="fecharModalNovoUsuario()" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+                        <span class="text-2xl">&times;</span>
+                    </button>
+                </div>
+
+                <form id="formNovoUsuario" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Nome Completo</label>
+                        <input type="text" id="novoNome" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Email</label>
+                        <input type="email" id="novoEmail" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Senha</label>
+                        <input type="password" id="novaSenha" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Perfil</label>
+                        <select id="novoPerfil" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
+                            <option value="user">Usuário</option>
+                            <option value="admin">Administrador</option>
+                        </select>
+                    </div>
+
+                    <div class="flex space-x-4 pt-4">
+                        <button type="button" onclick="fecharModalNovoUsuario()" class="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-2 rounded-lg transition">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition">
+                            Criar Usuário
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
+    <!-- Scripts -->
+    <script type="module" src="../js/core/crypto.utils.js"></script>
+    <script type="module" src="../js/core/toast.js"></script>
+    <script type="module" src="../js/services/AuthService.js"></script>
+    <script type="module" src="../js/services/propostaService.js"></script>
+    <script type="module" src="../js/controllers/adminController.js"></script>
+</body>
+</html>
