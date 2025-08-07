@@ -1,60 +1,121 @@
 
-// AuthService.js - Serviço de autenticação consolidado e profissional
-// Unifica lógica de auth.js, auth.class.js e auth-simple.js
-// Utiliza dependências de toast, crypto, validation via ES6 modules
+/**
+ * AuthService.js - Serviço de autenticação consolidado e profissional
+ * 
+ * @description Unifica toda a lógica de autenticação da aplicação, gerenciando
+ * login, logout, sessões, monitoramento de inatividade e segurança.
+ * Consolida funcionalidades anteriormente espalhadas em auth.js, auth.class.js
+ * e auth-simple.js para uma abordagem centralizada e modular.
+ * 
+ * @author ProTech Development Team
+ * @version 2.0.0
+ * @since 2025-08-06
+ */
 
-import { Toast } from '../core/toast.js';
-import { CryptoUtils } from '../core/crypto.utils.js';
-import { Validation } from '../core/validation.js';
+import { Toast, CryptoUtils, Validation } from '../core/index.js';
 
+/**
+ * Serviço centralizado de autenticação
+ * Gerencia login, logout, sessões e segurança
+ */
 class AuthService {
   constructor() {
+    // Chaves de armazenamento local
     this.sessionKey = 'ferramenta_protech_session';
     this.userKey = 'usuariosRegistrados';
+    
+    // Configurações de segurança
     this.maxTentativas = 3;
     this.tentativasLogin = 0;
+    
+    // Monitoramento de atividade
     this.ultimaAtividade = Date.now();
-    this.intervaloInatividade = 30 * 60 * 1000; // 30 minutos
+    this.intervaloInatividade = 30 * 60 * 1000; // 30 minutos em ms
     this.timerInatividade = null;
+    
+    // Estados de controle
     this.carregado = false;
     this.processandoLogin = false;
+    
+    // Usuários padrão para demonstração
+    // TODO: Migrar para autenticação via API em produção
     this.usuariosPadrao = [
-      { id: 1, email: 'admin@promptpro.com', senha: 'admin123' },
-      { id: 2, email: 'demo@promptpro.com', senha: 'demo123' }
+      { id: 1, email: 'admin@promptpro.com', senha: 'admin123', role: 'admin' },
+      { id: 2, email: 'demo@promptpro.com', senha: 'demo123', role: 'user' }
     ];
+    
+    // Inicializar monitoramentos
     this.inicializarMonitoramentoInatividade();
     this.inicializarUsuariosPadrao();
   }
 
+  /**
+   * Inicializa o serviço de autenticação
+   * Verifica dependências e estado de login existente
+   * 
+   * @returns {Promise<void>}
+   */
   async iniciar() {
     await this.aguardarDependencias();
+    
+    // Se já está logado, redirecionar para área autenticada
     if (this.verificarLogin()) {
       this.redirecionarParaBoasVindas();
       return;
     }
+    
     this.carregado = true;
   }
 
+  /**
+   * Aguarda carregamento das dependências críticas
+   * Sistema de fallback para evitar erros de módulos não carregados
+   * 
+   * @private
+   * @returns {Promise<void>}
+   */
   async aguardarDependencias() {
-    // Aguarda Toast, CryptoUtils, Validation
     const dependencias = [Toast, CryptoUtils, Validation];
+    
     for (const dep of dependencias) {
       let tentativas = 0;
-      while (!dep && tentativas < 50) {
+      const maxTentativas = 50; // 5 segundos máximo
+      
+      while (!dep && tentativas < maxTentativas) {
         await new Promise(resolve => setTimeout(resolve, 100));
         tentativas++;
+      }
+      
+      if (tentativas >= maxTentativas) {
+        console.warn(`⚠️ Dependência não carregada após ${maxTentativas * 100}ms`);
       }
     }
   }
 
+  /**
+   * Configura monitoramento automático de inatividade
+   * Faz logout automático após período de inatividade configurado
+   * 
+   * @private
+   */
   inicializarMonitoramentoInatividade() {
+    // Verificar inatividade a cada minuto
     this.timerInatividade = setInterval(() => {
-      if (Date.now() - this.ultimaAtividade > this.intervaloInatividade) {
+      const tempoInativo = Date.now() - this.ultimaAtividade;
+      
+      if (tempoInativo > this.intervaloInatividade) {
+        console.log('🕒 Sessão expirada por inatividade');
         this.logout();
       }
-    }, 60 * 1000);
+    }, 60 * 1000); // Verificar a cada minuto
   }
 
+  /**
+   * Inicializa usuários padrão se não existirem
+   * Usado para demonstração - deve ser removido em produção
+   * 
+   * @private
+   */
   inicializarUsuariosPadrao() {
     if (!localStorage.getItem(this.userKey)) {
       localStorage.setItem(this.userKey, JSON.stringify(this.usuariosPadrao));
@@ -62,25 +123,47 @@ class AuthService {
   }
 
   /**
-   * Processar login do usuário
+   * Processa tentativa de login do usuário
+   * Inclui validação, controle de tentativas e segurança
+   * 
+   * @param {string} email - Email do usuário
+   * @param {string} senha - Senha do usuário
+   * @param {boolean} lembrar - Se deve manter sessão persistente
+   * @returns {Promise<Object>} Resultado do login
+   * 
+   * @throws {Error} Em caso de credenciais inválidas ou conta bloqueada
    */
   async processarLogin(email, senha, lembrar = false) {
     try {
-      // Verificar se está bloqueado
+      // Verificar se a conta está temporariamente bloqueada
       if (this.tentativasLogin >= this.maxTentativas) {
-        Toast.error('Conta temporariamente bloqueada por excesso de tentativas');
+        const mensagem = 'Conta temporariamente bloqueada por excesso de tentativas';
+        Toast.error(mensagem);
         throw new Error('Conta bloqueada');
       }
 
-      // Validar credenciais
+      // Validar formato do email antes de processar
+      if (!Validation.validate(email, 'email')) {
+        Toast.error('Formato de email inválido');
+        throw new Error('Email inválido');
+      }
+
+      // Validar credenciais contra base de dados
       const usuario = await this.validarCredenciais(email, senha);
       if (!usuario) {
         this.tentativasLogin++;
-        Toast.error('Email ou senha incorretos');
+        const tentativasRestantes = this.maxTentativas - this.tentativasLogin;
+        
+        if (tentativasRestantes > 0) {
+          Toast.error(`Email ou senha incorretos. ${tentativasRestantes} tentativa(s) restante(s)`);
+        } else {
+          Toast.error('Conta bloqueada por excesso de tentativas');
+        }
+        
         throw new Error('Credenciais inválidas');
       }
 
-      // Reset tentativas e fazer login
+      // Login bem-sucedido - resetar contador e efetivar login
       this.tentativasLogin = 0;
       await this.realizarLogin(usuario, lembrar);
       
@@ -92,13 +175,19 @@ class AuthService {
       };
       
     } catch (error) {
-      console.error('Erro no login:', error);
+      console.error('❌ Erro no processamento de login:', error);
       throw error;
     }
   }
 
   /**
-   * Validar credenciais do usuário
+   * Valida credenciais do usuário contra a base de dados
+   * Em produção, deve ser substituído por chamada à API
+   * 
+   * @private
+   * @param {string} email - Email para validação
+   * @param {string} senha - Senha para validação
+   * @returns {Promise<Object|null>} Dados do usuário ou null se inválido
    */
   async validarCredenciais(email, senha) {
     try {

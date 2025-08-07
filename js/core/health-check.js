@@ -296,4 +296,4 @@ window.quickHealth = async () => {
 console.log('✅ Health Check System carregado e disponível globalmente');
 console.log('🏥 Use checkHealth() ou quickHealth() para diagnóstico');
 
-export default healthCheck;
+export default HealthCheckSystem;

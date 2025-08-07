@@ -484,6 +484,9 @@ class UserSessionManager {
 
 // =================== EXPORTS GLOBAIS ===================
 
+// Export default para ES6 modules
+export default UserSessionManager;
+
 // Instância global para facilitar o uso
 window.UserSessionManager = UserSessionManager;
 

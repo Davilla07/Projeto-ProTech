@@ -26,13 +26,10 @@
     
     <title>ProTech - Ferramentas Digitais Profissionais</title>
     
-    <!-- Tailwind CSS - DESENVOLVIMENTO -->
-    <!-- NOTA: Para produção, instalar Tailwind via PostCSS ou CLI -->
-    <!-- https://tailwindcss.com/docs/installation -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
+    <!-- Tailwind CSS (Build Local) -->
+    <link rel="stylesheet" href="./assets/css/tailwind.output.css">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="./styles/style.css">
+    <link rel="stylesheet" href="./css/style.css">
     
     <!-- Tailwind Config -->
     <script>
@@ -1036,8 +1033,53 @@
     </footer>
 
     <!-- Scripts -->
-    <!-- Inicialização modular da aplicação -->
-    <script type="module" src="./js/app.init.js"></script>
+    <!-- Inicialização via AppBootstrapper (nova arquitetura SRP) -->
+    <script type="module">
+        // Importar e executar o AppBootstrapper
+        import('./js/AppBootstrapper.js')
+            .then(module => {
+                // Usar a função global de boot
+                return window.bootProTech();
+            })
+            .catch(error => {
+                console.error('💥 Erro crítico no boot:', error);
+                
+                // Fallback básico em caso de falha total
+                document.body.innerHTML = `
+                    <div style="
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: #1e3a8a;
+                        color: white;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+                        text-align: center;
+                    ">
+                        <div>
+                            <h2>⚠️ Erro de Inicialização</h2>
+                            <p>Falha ao carregar a aplicação ProTech</p>
+                            <button onclick="window.location.reload()" style="
+                                background: white;
+                                color: #1e3a8a;
+                                border: none;
+                                padding: 12px 24px;
+                                border-radius: 8px;
+                                font-weight: 600;
+                                cursor: pointer;
+                                margin-top: 16px;
+                            ">
+                                🔄 Recarregar Página
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+    </script>
     
     <!-- Foco visível para todos os botões/links -->
     <style>

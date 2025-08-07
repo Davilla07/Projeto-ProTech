@@ -1,7 +1,7 @@
 
 // loginController.js - Controller para autenticação e interface de login
-import AuthService from '../services/AuthService.js';
-import { Toast } from '../core/toast.js';
+import { AuthService } from '../services/index.js';
+import { Toast } from '../core/index.js';
 
 class LoginController {
   constructor() {

@@ -1,4 +1,4 @@
-import { Toast } from '../core/toast.js';
+import { Toast } from '../core/index.js';
 /**
  * DarkMode - Sistema de modo escuro/claro
  * Gerencia tema da aplicação com persistência e detecção automática
@@ -425,4 +425,4 @@ darkMode.autoSetup({
     createToggleButton: false // Será criado manualmente nas páginas
 });
 
-export default darkMode;
+export default DarkModeSystem;

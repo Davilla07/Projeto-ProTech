@@ -1,4 +1,5 @@
-import AuthService from './services/AuthService.js';
+import { AuthService } from './services/index.js';
+
 /**
  * Router - Sistema de roteamento SPA com fallback
  * Gerencia navegação entre páginas com suporte a SPA e redirecionamentos

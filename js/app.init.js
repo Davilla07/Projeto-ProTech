@@ -344,15 +344,6 @@ class AppInitializer {
     }
 }
 
-// Instanciar e inicializar
-const appInitializer = new AppInitializer();
-
-// Exportar para uso global
-window.appInitializer = appInitializer;
-
-// Auto-inicializar
-appInitializer.init().catch(error => {
-    console.error('💥 Falha crítica na inicialização:', error);
-});
-
-export default appInitializer;
+// Exportar apenas a classe, sem instanciar ou auto-inicializar
+// A inicialização agora é responsabilidade do AppBootstrapper
+export default AppInitializer;
